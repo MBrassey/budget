@@ -22,26 +22,26 @@ function generateFaviconSVG() {
   const accentColor = TERMINAL_COLORS[Math.floor(Math.random() * TERMINAL_COLORS.length)];
   const cursorColor = Math.random() > 0.7 ? accentColor : primaryColor;
   
-  // Random cursor position variations
-  const cursorX = 19 + Math.floor(Math.random() * 4); // 19-22
-  const cursorY = 16 + Math.floor(Math.random() * 3); // 16-18
+  // Cursor positioned right next to the dollar sign
+  const cursorX = 22 + Math.floor(Math.random() * 2); // 22-23 (right of dollar sign)
+  const cursorY = 24 + Math.floor(Math.random() * 2); // 24-25 (at baseline of dollar sign)
   
   // Random grid opacity
-  const gridOpacity = 0.05 + Math.random() * 0.1; // 0.05-0.15
+  const gridOpacity = 0.02 + Math.random() * 0.05; // 0.02-0.07 (reduced)
   
   // Random border intensity
-  const borderOpacity = 0.6 + Math.random() * 0.3; // 0.6-0.9
+  const borderOpacity = 0.4 + Math.random() * 0.2; // 0.4-0.6 (reduced)
   
   // Timestamp-based seed for consistent builds on same day
   const today = new Date().toDateString();
   const timeBasedSeed = today.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  const dollarRotation = (timeBasedSeed % 10) - 5; // -5 to 5 degrees
+  const dollarRotation = (timeBasedSeed % 6) - 3; // -3 to 3 degrees (reduced rotation)
   
   return `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Green glow filter -->
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="0.8" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
       <feMerge> 
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -49,60 +49,56 @@ function generateFaviconSVG() {
     </filter>
     
     <!-- Subtle grid pattern -->
-    <pattern id="grid" width="3" height="3" patternUnits="userSpaceOnUse">
-      <path d="M 3 0 L 0 0 0 3" fill="none" stroke="${primaryColor}" stroke-width="0.1" opacity="${gridOpacity}"/>
+    <pattern id="grid" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M 4 0 L 0 0 0 4" fill="none" stroke="${primaryColor}" stroke-width="0.1" opacity="${gridOpacity}"/>
     </pattern>
   </defs>
   
   <!-- Black background -->
   <rect width="32" height="32" fill="#000000"/>
   
-  <!-- Grid overlay -->
-  <rect x="2" y="8" width="28" height="22" fill="url(#grid)"/>
+  <!-- Grid overlay (reduced area) -->
+  <rect x="1" y="1" width="30" height="30" fill="url(#grid)"/>
   
-  <!-- Terminal window frame -->
+  <!-- Minimal terminal window frame (thinner) -->
   <rect 
-    x="1" 
-    y="1" 
-    width="30" 
-    height="30" 
+    x="0.5" 
+    y="0.5" 
+    width="31" 
+    height="31" 
     fill="none" 
     stroke="${primaryColor}" 
-    stroke-width="0.8"
+    stroke-width="0.5"
     opacity="${borderOpacity}"
-    filter="url(#glow)"
   />
   
-  <!-- Terminal header bar -->
-  <rect x="1" y="1" width="30" height="6" fill="#001100" stroke="${primaryColor}" stroke-width="0.2" opacity="0.8"/>
-  <rect x="2" y="2" width="28" height="4" fill="#000800"/>
+  <!-- Minimal terminal header bar (smaller) -->
+  <rect x="1" y="1" width="30" height="3" fill="#001100" opacity="0.6"/>
   
-  <!-- Terminal prompt and status indicators -->
-  <text x="4" y="5.5" font-family="monospace" font-size="2.5" fill="${primaryColor}" opacity="0.8">></text>
-  <rect x="26" y="3" width="3" height="0.5" fill="${accentColor}" opacity="0.7"/>
-  <rect x="26" y="4.5" width="2" height="0.5" fill="${primaryColor}" opacity="0.5"/>
+  <!-- Small terminal prompt indicator -->
+  <text x="2" y="3.2" font-family="monospace" font-size="1.8" fill="${primaryColor}" opacity="0.6">></text>
   
-  <!-- Main dollar sign with slight rotation -->
+  <!-- MAIN DOLLAR SIGN - Much bigger and centered -->
   <text
     x="16"
-    y="22"
+    y="23"
     text-anchor="middle"
-    font-size="11"
+    font-size="24"
     font-family="monospace"
     font-weight="bold"
     fill="${primaryColor}"
     filter="url(#glow)"
-    transform="rotate(${dollarRotation} 16 22)"
+    transform="rotate(${dollarRotation} 16 23)"
   >
     $
   </text>
   
-  <!-- Terminal cursor with random position -->
-  <rect x="${cursorX}" y="${cursorY}" width="0.8" height="5" fill="${cursorColor}" filter="url(#glow)">
+  <!-- Terminal cursor positioned right next to dollar sign -->
+  <rect x="${cursorX}" y="${cursorY}" width="6" height="1" fill="${cursorColor}" filter="url(#glow)">
     <animate 
       attributeName="opacity" 
-      values="1;0.2;1" 
-      dur="1.2s" 
+      values="1;0.3;1" 
+      dur="1.5s" 
       repeatCount="indefinite"
     />
   </rect>
@@ -142,7 +138,7 @@ function generateFaviconICO(size = 32) {
   // Build-time variations
   const buildHash = Date.now() % 1000;
   const primaryGreen = 255;
-  const accentIntensity = 100 + (buildHash % 156); // 100-255
+  const accentIntensity = 150 + (buildHash % 106); // 150-255
   
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -154,47 +150,50 @@ function generateFaviconICO(size = 32) {
       // Black background
       r = g = b = 0;
       
-      // Terminal border with build-time intensity variation
-      if ((refX === 1 || refX === 30 || refY === 1 || refY === 30) && 
-          refX >= 1 && refX <= 30 && refY >= 1 && refY <= 30) {
-        g = primaryGreen;
+      // Minimal terminal border
+      if ((refX === 0 || refX === 31 || refY === 0 || refY === 31)) {
+        g = Math.floor(primaryGreen * 0.4);
       }
       
-      // Header area
-      if (refY >= 1 && refY <= 6 && refX >= 1 && refX <= 30) {
-        g = 17; // Dark green
+      // Minimal header area
+      if (refY >= 1 && refY <= 3 && refX >= 1 && refX <= 30) {
+        g = 8; // Very dark green
       }
       
-      // Terminal prompt character (>) in header
-      if (refX >= 4 && refX <= 5 && refY >= 4 && refY <= 5) {
-        r = 0; g = primaryGreen; b = 0;
-      }
-      
-      // Dollar sign with build-time positioning
-      const dollarCenterX = 16 * scale;
-      const dollarCenterY = 22 * scale;
-      const dollarSize = 5 * scale;
+             // MUCH BIGGER Dollar sign - takes up most of the icon
+       const dollarCenterX = 16 * scale;
+       const dollarCenterY = 23 * scale;
+       const dollarSize = 12 * scale; // Much bigger!
+       const strokeThickness = Math.max(1, scale * 1.5);
       
       if (Math.abs(x - dollarCenterX) <= dollarSize/2 && Math.abs(y - dollarCenterY) <= dollarSize/2) {
-        // Vertical line
-        if (Math.abs(x - dollarCenterX) <= scale/3) {
+        // Vertical line of $
+        if (Math.abs(x - dollarCenterX) <= strokeThickness) {
           r = 0; g = primaryGreen; b = 0;
         }
-        // Horizontal lines
-        else if ((Math.abs(y - (dollarCenterY - dollarSize/3)) <= scale/3 || 
-                  Math.abs(y - dollarCenterY) <= scale/3 ||
-                  Math.abs(y - (dollarCenterY + dollarSize/3)) <= scale/3) &&
-                 Math.abs(x - dollarCenterX) <= dollarSize/2) {
+        // Top horizontal line of $
+        else if (Math.abs(y - (dollarCenterY - dollarSize/3)) <= strokeThickness &&
+                 Math.abs(x - dollarCenterX) <= dollarSize/3) {
+          r = 0; g = primaryGreen; b = 0;
+        }
+        // Middle horizontal line of $
+        else if (Math.abs(y - dollarCenterY) <= strokeThickness &&
+                 Math.abs(x - dollarCenterX) <= dollarSize/3) {
+          r = 0; g = primaryGreen; b = 0;
+        }
+        // Bottom horizontal line of $
+        else if (Math.abs(y - (dollarCenterY + dollarSize/3)) <= strokeThickness &&
+                 Math.abs(x - dollarCenterX) <= dollarSize/3) {
           r = 0; g = primaryGreen; b = 0;
         }
       }
       
-      // Cursor with build-time position variation
-      const cursorX = 19 + (buildHash % 4);
-      const cursorY = 16 + (buildHash % 3);
-      if (refX >= cursorX && refX <= cursorX + 1 && refY >= cursorY && refY <= cursorY + 5) {
-        r = 0; g = accentIntensity; b = 0;
-      }
+                           // Cursor positioned next to dollar sign (horizontal)
+        const cursorX = 22 + (buildHash % 2);
+        const cursorY = 24 + (buildHash % 2);
+        if (refX >= cursorX && refX <= cursorX + 5 && refY >= cursorY && refY <= cursorY + 1) {
+          r = 0; g = accentIntensity; b = 0;
+        }
       
       pixels.push(b, g, r, a); // BGRA format
     }

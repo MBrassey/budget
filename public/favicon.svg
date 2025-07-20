@@ -2,7 +2,7 @@
   <defs>
     <!-- Green glow filter -->
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="0.8" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="1.2" result="coloredBlur"/>
       <feMerge> 
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -10,67 +10,63 @@
     </filter>
     
     <!-- Subtle grid pattern -->
-    <pattern id="grid" width="3" height="3" patternUnits="userSpaceOnUse">
-      <path d="M 3 0 L 0 0 0 3" fill="none" stroke="#00FF00" stroke-width="0.1" opacity="0.1434026705365863"/>
+    <pattern id="grid" width="4" height="4" patternUnits="userSpaceOnUse">
+      <path d="M 4 0 L 0 0 0 4" fill="none" stroke="#00FF00" stroke-width="0.1" opacity="0.030692341772738368"/>
     </pattern>
   </defs>
   
   <!-- Black background -->
   <rect width="32" height="32" fill="#000000"/>
   
-  <!-- Grid overlay -->
-  <rect x="2" y="8" width="28" height="22" fill="url(#grid)"/>
+  <!-- Grid overlay (reduced area) -->
+  <rect x="1" y="1" width="30" height="30" fill="url(#grid)"/>
   
-  <!-- Terminal window frame -->
+  <!-- Minimal terminal window frame (thinner) -->
   <rect 
-    x="1" 
-    y="1" 
-    width="30" 
-    height="30" 
+    x="0.5" 
+    y="0.5" 
+    width="31" 
+    height="31" 
     fill="none" 
     stroke="#00FF00" 
-    stroke-width="0.8"
-    opacity="0.7920307407018325"
-    filter="url(#glow)"
+    stroke-width="0.5"
+    opacity="0.44301738027772947"
   />
   
-  <!-- Terminal header bar -->
-  <rect x="1" y="1" width="30" height="6" fill="#001100" stroke="#00FF00" stroke-width="0.2" opacity="0.8"/>
-  <rect x="2" y="2" width="28" height="4" fill="#000800"/>
+  <!-- Minimal terminal header bar (smaller) -->
+  <rect x="1" y="1" width="30" height="3" fill="#001100" opacity="0.6"/>
   
-  <!-- Terminal prompt and status indicators -->
-  <text x="4" y="5.5" font-family="monospace" font-size="2.5" fill="#00FF00" opacity="0.8">></text>
-  <rect x="26" y="3" width="3" height="0.5" fill="#00FFFF" opacity="0.7"/>
-  <rect x="26" y="4.5" width="2" height="0.5" fill="#00FF00" opacity="0.5"/>
+  <!-- Small terminal prompt indicator -->
+  <text x="2" y="3.2" font-family="monospace" font-size="1.8" fill="#00FF00" opacity="0.6">></text>
   
-  <!-- Main dollar sign with slight rotation -->
+  <!-- MAIN DOLLAR SIGN - Much bigger and centered -->
   <text
     x="16"
-    y="22"
+    y="23"
     text-anchor="middle"
-    font-size="11"
+    font-size="24"
     font-family="monospace"
     font-weight="bold"
     fill="#00FF00"
     filter="url(#glow)"
-    transform="rotate(-1 16 22)"
+    transform="rotate(-1 16 23)"
   >
     $
   </text>
   
-  <!-- Terminal cursor with random position -->
-  <rect x="22" y="18" width="0.8" height="5" fill="#00FF00" filter="url(#glow)">
+  <!-- Terminal cursor positioned right next to dollar sign -->
+  <rect x="23" y="25" width="6" height="1" fill="#00FF00" filter="url(#glow)">
     <animate 
       attributeName="opacity" 
-      values="1;0.2;1" 
-      dur="1.2s" 
+      values="1;0.3;1" 
+      dur="1.5s" 
       repeatCount="indefinite"
     />
   </rect>
   
   <!-- Build timestamp (invisible but affects SVG hash) -->
   <metadata>
-    <build-time>2025-07-20T09:27:55.807Z</build-time>
+    <build-time>2025-07-20T09:44:05.096Z</build-time>
     <build-seed>1004</build-seed>
   </metadata>
 </svg>
