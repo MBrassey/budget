@@ -192,6 +192,7 @@ export default function TerminalBudget() {
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
   const [draggedItem, setDraggedItem] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [backgroundImage, setBackgroundImage] = useState<string>("")
 
   // Update time every second
   useEffect(() => {
@@ -202,8 +203,12 @@ export default function TerminalBudget() {
   // Load data from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem("terminalBudget")
+    const savedBg = localStorage.getItem("terminalBackground")
     if (saved) {
       setBudgetData(JSON.parse(saved))
+    }
+    if (savedBg) {
+      setBackgroundImage(savedBg)
     }
   }, [])
 
@@ -211,6 +216,15 @@ export default function TerminalBudget() {
   useEffect(() => {
     localStorage.setItem("terminalBudget", JSON.stringify(budgetData))
   }, [budgetData])
+
+  // Save background to localStorage whenever it changes
+  useEffect(() => {
+    if (backgroundImage) {
+      localStorage.setItem("terminalBackground", backgroundImage)
+    } else {
+      localStorage.removeItem("terminalBackground")
+    }
+  }, [backgroundImage])
 
   const addExpense = () => {
     const newExpense: Expense = {
@@ -297,6 +311,32 @@ export default function TerminalBudget() {
     }
   }
 
+  const handleBackgroundUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("ERROR: Please select an image file")
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("ERROR: Image too large (max 5MB)")
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const result = e.target?.result as string
+        setBackgroundImage(result)
+      }
+      reader.readAsDataURL(file)
+    }
+    // Reset the input
+    event.target.value = ""
+  }
+
   // Calculations
   const monthlyIncome = budgetData.incomeType === "monthly" ? budgetData.monthlyIncome : budgetData.biMonthlyIncome * 2
   const totalMonthlyExpenses = budgetData.expenses.reduce((sum, expense) => sum + expense.amount, 0)
@@ -324,8 +364,21 @@ export default function TerminalBudget() {
     })
   }
 
+  const getBackgroundStyle = () => {
+    if (!backgroundImage || backgroundImage.trim() === "") {
+      return { backgroundColor: "#000000" }
+    }
+    return {
+      backgroundImage: `url('${backgroundImage}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundRepeat: "no-repeat",
+    }
+  }
+
   return (
-    <div className="min-h-screen terminal-bg text-green-400 p-2 sm:p-4 terminal-text relative">
+    <div className="min-h-screen text-green-400 p-2 sm:p-4 terminal-text relative" style={getBackgroundStyle()}>
       <style dangerouslySetInnerHTML={{ __html: terminalStyles }} />
 
       <div className="max-w-7xl mx-auto relative">
@@ -461,32 +514,34 @@ export default function TerminalBudget() {
               type="file"
               accept=".json"
               onChange={importData}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
-            <Button className="terminal-button h-11 sm:h-auto w-full sm:w-auto">
+            <Button className="terminal-button h-11 sm:h-auto w-full sm:w-auto pointer-events-none">
               <Upload className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">import_data</span>
               <span className="sm:hidden">import</span>
             </Button>
           </div>
-          <Button
-            onClick={() => {
-              const url = prompt("Enter background image URL (or leave empty for black background):")
-              if (url !== null) {
-                const style = document.querySelector("style[data-bg]") || document.createElement("style")
-                style.setAttribute("data-bg", "true")
-                style.textContent = url
-                  ? `.terminal-bg { background-image: url('${url}') !important; }`
-                  : `.terminal-bg { background: #000000 !important; }`
-                if (!document.head.contains(style)) document.head.appendChild(style)
-              }
-            }}
-            className="terminal-button h-11 sm:h-auto"
-          >
-            <Terminal className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">set_background</span>
-            <span className="sm:hidden">background</span>
-          </Button>
+          <div className="relative">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleBackgroundUpload}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            />
+            <Button className="terminal-button h-11 sm:h-auto pointer-events-none">
+              <Upload className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">upload_background</span>
+              <span className="sm:hidden">background</span>
+            </Button>
+          </div>
+          {backgroundImage && (
+            <Button onClick={() => setBackgroundImage("")} className="terminal-button h-11 sm:h-auto">
+              <Terminal className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">clear_background</span>
+              <span className="sm:hidden">clear</span>
+            </Button>
+          )}
         </div>
 
         {/* Main Terminal Interface */}
