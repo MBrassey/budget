@@ -157,7 +157,26 @@ const terminalStyles = `
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
   }
   
-  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .terminal-bg {
+      background-attachment: scroll;
+    }
+    
+    .terminal-card {
+      backdrop-filter: blur(10px);
+    }
+    
+    .terminal-button {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    
+    .terminal-input {
+      min-height: 44px;
+      font-size: 16px;
+    }
+  }
 `
 
 export default function TerminalBudget() {
@@ -306,44 +325,46 @@ export default function TerminalBudget() {
   }
 
   return (
-    <div className="min-h-screen terminal-bg text-green-400 p-4 terminal-text relative">
+    <div className="min-h-screen terminal-bg text-green-400 p-2 sm:p-4 terminal-text relative">
       <style dangerouslySetInnerHTML={{ __html: terminalStyles }} />
 
       <div className="max-w-7xl mx-auto relative">
         {/* Terminal Header */}
-        <div className="terminal-card rounded-none p-4 mb-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Terminal className="h-6 w-6 terminal-accent" />
-              <span className="terminal-header text-xl">budget_manager v2.1.4</span>
-              <span className="text-gray-500">|</span>
-              <span className="text-gray-400 text-sm">user@arch-system</span>
+        <div className="terminal-card rounded-none p-3 sm:p-4 mb-3 sm:mb-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Terminal className="h-5 w-5 sm:h-6 sm:w-6 terminal-accent" />
+              <span className="terminal-header text-lg sm:text-xl">budget_manager v2.1.4</span>
+              <span className="text-gray-500 hidden sm:inline">|</span>
+              <span className="text-gray-400 text-xs sm:text-sm hidden sm:inline">user@arch-system</span>
             </div>
-            <div className="text-right">
-              <div className="terminal-header text-2xl font-mono tracking-wider">{formatTime(currentTime)}</div>
-              <div className="text-gray-400 text-sm">{formatDate(currentTime)}</div>
+            <div className="text-left sm:text-right">
+              <div className="terminal-header text-xl sm:text-2xl font-mono tracking-wider">
+                {formatTime(currentTime)}
+              </div>
+              <div className="text-gray-400 text-xs sm:text-sm">{formatDate(currentTime)}</div>
             </div>
           </div>
         </div>
 
         {/* System Status */}
-        <Card className="terminal-card rounded-none mb-4">
-          <CardHeader className="pb-2">
-            <CardTitle className="terminal-header flex items-center gap-2">
-              <Server className="h-5 w-5" />
+        <Card className="terminal-card rounded-none mb-3 sm:mb-4">
+          <CardHeader className="pb-2 p-3 sm:p-6">
+            <CardTitle className="terminal-header flex items-center gap-2 text-base sm:text-lg">
+              <Server className="h-4 w-4 sm:h-5 sm:w-5" />
               FINANCIAL_STATUS
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label className="terminal-secondary text-sm">INCOME_TYPE</Label>
+          <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-6 pt-0">
+            <div className="space-y-2">
+              <Label className="terminal-secondary text-xs sm:text-sm">INCOME_TYPE</Label>
               <Select
                 value={budgetData.incomeType}
                 onValueChange={(value: "monthly" | "bimonthly") =>
                   setBudgetData((prev) => ({ ...prev, incomeType: value }))
                 }
               >
-                <SelectTrigger className="terminal-input">
+                <SelectTrigger className="terminal-input h-11 sm:h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-black border-green-500/30">
@@ -352,12 +373,13 @@ export default function TerminalBudget() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label className="terminal-secondary text-sm">
+            <div className="space-y-2">
+              <Label className="terminal-secondary text-xs sm:text-sm">
                 {budgetData.incomeType === "monthly" ? "MONTHLY" : "BI_MONTHLY"}_INCOME
               </Label>
               <Input
                 type="number"
+                inputMode="numeric"
                 value={
                   budgetData.incomeType === "monthly"
                     ? budgetData.monthlyIncome || ""
@@ -370,68 +392,69 @@ export default function TerminalBudget() {
                       Number(e.target.value) || 0,
                   }))
                 }
-                className="terminal-input"
+                className="terminal-input h-11 sm:h-10"
                 placeholder="0.00"
               />
             </div>
-            <div className="flex items-end">
+            <div className="flex items-end sm:col-span-1 lg:col-span-1">
               <div>
-                <p className="terminal-secondary text-sm">MONTHLY_TOTAL</p>
-                <p className="terminal-accent text-2xl font-mono">${monthlyIncome.toLocaleString()}</p>
+                <p className="terminal-secondary text-xs sm:text-sm">MONTHLY_TOTAL</p>
+                <p className="terminal-accent text-xl sm:text-2xl font-mono">${monthlyIncome.toLocaleString()}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* System Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-4">
           <Card className="terminal-card rounded-none">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Activity className="h-4 w-4 terminal-accent" />
-                <span className="terminal-secondary text-sm">FREE_MEMORY</span>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-1 sm:gap-2 mb-2">
+                <Activity className="h-3 w-3 sm:h-4 sm:w-4 terminal-accent" />
+                <span className="terminal-secondary text-xs sm:text-sm">FREE</span>
               </div>
-              <p className="terminal-accent text-xl font-mono">${monthlyFree.toLocaleString()}</p>
-              <p className="text-gray-500 text-xs">monthly_available</p>
+              <p className="terminal-accent text-sm sm:text-xl font-mono">${monthlyFree.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs hidden sm:block">monthly_available</p>
             </CardContent>
           </Card>
           <Card className="terminal-card rounded-none">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Database className="h-4 w-4 text-red-400" />
-                <span className="text-red-400 text-sm">USED_MEMORY</span>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-1 sm:gap-2 mb-2">
+                <Database className="h-3 w-3 sm:h-4 sm:w-4 text-red-400" />
+                <span className="text-red-400 text-xs sm:text-sm">USED</span>
               </div>
-              <p className="text-red-400 text-xl font-mono">${totalMonthlyExpenses.toLocaleString()}</p>
-              <p className="text-gray-500 text-xs">monthly_expenses</p>
+              <p className="text-red-400 text-sm sm:text-xl font-mono">${totalMonthlyExpenses.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs hidden sm:block">monthly_expenses</p>
             </CardContent>
           </Card>
           <Card className="terminal-card rounded-none">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="h-4 w-4 text-yellow-400" />
-                <span className="text-yellow-400 text-sm">QUARTERLY</span>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-1 sm:gap-2 mb-2">
+                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+                <span className="text-yellow-400 text-xs sm:text-sm">Q3</span>
               </div>
-              <p className="text-yellow-400 text-xl font-mono">${quarterlyExpenses.toLocaleString()}</p>
-              <p className="text-gray-500 text-xs">3_month_total</p>
+              <p className="text-yellow-400 text-sm sm:text-xl font-mono">${quarterlyExpenses.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs hidden sm:block">3_month_total</p>
             </CardContent>
           </Card>
           <Card className="terminal-card rounded-none">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Target className="h-4 w-4 text-purple-400" />
-                <span className="text-purple-400 text-sm">ANNUAL</span>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-1 sm:gap-2 mb-2">
+                <Target className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
+                <span className="text-purple-400 text-xs sm:text-sm">YEAR</span>
               </div>
-              <p className="text-purple-400 text-xl font-mono">${annualExpenses.toLocaleString()}</p>
-              <p className="text-gray-500 text-xs">12_month_total</p>
+              <p className="text-purple-400 text-sm sm:text-xl font-mono">${annualExpenses.toLocaleString()}</p>
+              <p className="text-gray-500 text-xs hidden sm:block">12_month_total</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Control Panel */}
-        <div className="flex gap-2 mb-4">
-          <Button onClick={exportData} className="terminal-button">
+        <div className="flex flex-col sm:flex-row gap-2 mb-3 sm:mb-4">
+          <Button onClick={exportData} className="terminal-button h-11 sm:h-auto">
             <Download className="h-4 w-4 mr-2" />
-            export_data
+            <span className="hidden sm:inline">export_data</span>
+            <span className="sm:hidden">export</span>
           </Button>
           <div className="relative">
             <input
@@ -440,9 +463,10 @@ export default function TerminalBudget() {
               onChange={importData}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <Button className="terminal-button">
+            <Button className="terminal-button h-11 sm:h-auto w-full sm:w-auto">
               <Upload className="h-4 w-4 mr-2" />
-              import_data
+              <span className="hidden sm:inline">import_data</span>
+              <span className="sm:hidden">import</span>
             </Button>
           </div>
           <Button
@@ -457,40 +481,42 @@ export default function TerminalBudget() {
                 if (!document.head.contains(style)) document.head.appendChild(style)
               }
             }}
-            className="terminal-button"
+            className="terminal-button h-11 sm:h-auto"
           >
             <Terminal className="h-4 w-4 mr-2" />
-            set_background
+            <span className="hidden sm:inline">set_background</span>
+            <span className="sm:hidden">background</span>
           </Button>
         </div>
 
         {/* Main Terminal Interface */}
         <Tabs defaultValue="expenses" className="w-full">
-          <TabsList className="terminal-card rounded-none grid w-full grid-cols-2">
+          <TabsList className="terminal-card rounded-none grid w-full grid-cols-2 h-11 sm:h-auto">
             <TabsTrigger
               value="expenses"
-              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 terminal-text"
+              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 terminal-text text-sm sm:text-base"
             >
               ./expenses
             </TabsTrigger>
             <TabsTrigger
               value="goals"
-              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 terminal-text"
+              className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400 terminal-text text-sm sm:text-base"
             >
               ./goals
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="expenses" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="terminal-header text-xl">EXPENSE_PROCESSES</h2>
-              <Button onClick={addExpense} className="terminal-button">
+          <TabsContent value="expenses" className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+              <h2 className="terminal-header text-lg sm:text-xl">EXPENSE_PROCESSES</h2>
+              <Button onClick={addExpense} className="terminal-button h-11 sm:h-auto">
                 <Plus className="h-4 w-4 mr-2" />
-                spawn_process
+                <span className="hidden sm:inline">spawn_process</span>
+                <span className="sm:hidden">add expense</span>
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {budgetData.expenses.map((expense) => (
                 <ExpenseCard
                   key={expense.id}
@@ -504,16 +530,17 @@ export default function TerminalBudget() {
             </div>
           </TabsContent>
 
-          <TabsContent value="goals" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="terminal-header text-xl">TARGET_PROCESSES</h2>
-              <Button onClick={addGoal} className="terminal-button">
+          <TabsContent value="goals" className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+              <h2 className="terminal-header text-lg sm:text-xl">TARGET_PROCESSES</h2>
+              <Button onClick={addGoal} className="terminal-button h-11 sm:h-auto">
                 <Plus className="h-4 w-4 mr-2" />
-                create_target
+                <span className="hidden sm:inline">create_target</span>
+                <span className="sm:hidden">add goal</span>
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {budgetData.goals.map((goal) => (
                 <GoalCard
                   key={goal.id}
@@ -528,22 +555,26 @@ export default function TerminalBudget() {
 
             {budgetData.goals.length > 0 && (
               <Card className="terminal-card rounded-none">
-                <CardHeader>
-                  <CardTitle className="terminal-header">GOAL_SUMMARY</CardTitle>
+                <CardHeader className="p-3 sm:p-6">
+                  <CardTitle className="terminal-header text-base sm:text-lg">GOAL_SUMMARY</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                <CardContent className="p-3 sm:p-6 pt-0">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                     <div>
-                      <p className="terminal-secondary text-sm">TARGET_TOTAL</p>
-                      <p className="terminal-accent text-2xl font-mono">${totalGoalTarget.toLocaleString()}</p>
+                      <p className="terminal-secondary text-xs sm:text-sm">TARGET_TOTAL</p>
+                      <p className="terminal-accent text-lg sm:text-2xl font-mono">
+                        ${totalGoalTarget.toLocaleString()}
+                      </p>
                     </div>
                     <div>
-                      <p className="terminal-secondary text-sm">CURRENT_TOTAL</p>
-                      <p className="terminal-accent text-2xl font-mono">${totalGoalCurrent.toLocaleString()}</p>
+                      <p className="terminal-secondary text-xs sm:text-sm">CURRENT_TOTAL</p>
+                      <p className="terminal-accent text-lg sm:text-2xl font-mono">
+                        ${totalGoalCurrent.toLocaleString()}
+                      </p>
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-sm mb-1">
+                    <div className="flex justify-between text-xs sm:text-sm mb-1">
                       <span className="terminal-secondary">PROGRESS</span>
                       <span className="terminal-accent">
                         {totalGoalTarget > 0 ? Math.round((totalGoalCurrent / totalGoalTarget) * 100) : 0}%
@@ -598,21 +629,21 @@ function ExpenseCard({
       onDragStart={() => setDraggedItem(expense.id)}
       onDragEnd={() => setDraggedItem(null)}
     >
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 p-3 sm:p-6">
         <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <div
-              className="w-2 h-2 rounded-none"
+              className="w-2 h-2 rounded-none flex-shrink-0"
               style={{ backgroundColor: expense.color, boxShadow: `0 0 5px ${expense.color}` }}
             />
-            <CardTitle className="card-title text-sm font-mono">{expense.label}</CardTitle>
+            <CardTitle className="card-title text-xs sm:text-sm font-mono truncate">{expense.label}</CardTitle>
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-shrink-0 ml-2">
             <Button
               size="sm"
               variant="ghost"
               onClick={() => onEdit(expense)}
-              className="h-6 w-6 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+              className="h-8 w-8 sm:h-6 sm:w-6 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
             >
               <Edit className="h-3 w-3" />
             </Button>
@@ -620,15 +651,15 @@ function ExpenseCard({
               size="sm"
               variant="ghost"
               onClick={() => onDelete(expense.id)}
-              className="h-6 w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+              className="h-8 w-8 sm:h-6 sm:w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="text-xl font-mono" style={{ color: expense.color }}>
+      <CardContent className="p-3 sm:p-6 pt-0">
+        <div className="text-lg sm:text-xl font-mono" style={{ color: expense.color }}>
           ${expense.amount.toLocaleString()}
         </div>
         <Badge variant="secondary" className="mt-2 bg-black/50 text-gray-400 border border-gray-600 text-xs">
@@ -664,21 +695,21 @@ function GoalCard({
       onDragStart={() => setDraggedItem(goal.id)}
       onDragEnd={() => setDraggedItem(null)}
     >
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 p-3 sm:p-6">
         <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <div
-              className="w-2 h-2 rounded-none"
+              className="w-2 h-2 rounded-none flex-shrink-0"
               style={{ backgroundColor: goal.color, boxShadow: `0 0 5px ${goal.color}` }}
             />
-            <CardTitle className="card-title text-sm font-mono">{goal.label}</CardTitle>
+            <CardTitle className="card-title text-xs sm:text-sm font-mono truncate">{goal.label}</CardTitle>
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-shrink-0 ml-2">
             <Button
               size="sm"
               variant="ghost"
               onClick={() => onEdit(goal)}
-              className="h-6 w-6 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+              className="h-8 w-8 sm:h-6 sm:w-6 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
             >
               <Edit className="h-3 w-3" />
             </Button>
@@ -686,14 +717,14 @@ function GoalCard({
               size="sm"
               variant="ghost"
               onClick={() => onDelete(goal.id)}
-              className="h-6 w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+              className="h-8 w-8 sm:h-6 sm:w-6 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-6 pt-0">
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
             <span className="terminal-secondary">PROGRESS</span>
@@ -709,11 +740,11 @@ function GoalCard({
               }}
             />
           </div>
-          <div className="flex justify-between text-sm font-mono">
+          <div className="flex justify-between text-xs sm:text-sm font-mono">
             <span style={{ color: goal.color }}>${goal.currentAmount.toLocaleString()}</span>
             <span className="text-gray-400">${goal.targetAmount.toLocaleString()}</span>
           </div>
-          {goal.description && <p className="text-xs text-gray-500 font-mono mt-2">{goal.description}</p>}
+          {goal.description && <p className="text-xs text-gray-500 font-mono mt-2 line-clamp-2">{goal.description}</p>}
         </div>
       </CardContent>
     </Card>
@@ -734,43 +765,44 @@ function EditExpenseDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="terminal-card text-green-400 rounded-none border-green-500/30">
-        <DialogHeader>
-          <DialogTitle className="terminal-header">EDIT_EXPENSE_PROCESS</DialogTitle>
+      <DialogContent className="terminal-card text-green-400 rounded-none border-green-500/30 w-[95vw] max-w-md mx-auto">
+        <DialogHeader className="p-3 sm:p-6 pb-2">
+          <DialogTitle className="terminal-header text-base sm:text-lg">EDIT_EXPENSE_PROCESS</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 p-3 sm:p-6 pt-0">
           <div>
-            <Label className="terminal-secondary text-sm">PROCESS_NAME</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">PROCESS_NAME</Label>
             <Input
               value={editedExpense.label}
               onChange={(e) => setEditedExpense((prev) => ({ ...prev, label: e.target.value }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">MEMORY_USAGE</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">MEMORY_USAGE</Label>
             <Input
               type="number"
+              inputMode="numeric"
               value={editedExpense.amount || ""}
               onChange={(e) => setEditedExpense((prev) => ({ ...prev, amount: Number(e.target.value) || 0 }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">CATEGORY</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">CATEGORY</Label>
             <Input
               value={editedExpense.category}
               onChange={(e) => setEditedExpense((prev) => ({ ...prev, category: e.target.value }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">COLOR_CODE</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">COLOR_CODE</Label>
             <div className="grid grid-cols-6 gap-2 mt-2">
               {TERMINAL_COLORS.map((color) => (
                 <button
                   key={color}
-                  className={`w-6 h-6 rounded-none border ${
+                  className={`w-8 h-8 sm:w-6 sm:h-6 rounded-none border ${
                     editedExpense.color === color ? "border-white" : "border-gray-600"
                   }`}
                   style={{
@@ -783,10 +815,10 @@ function EditExpenseDialog({
             </div>
           </div>
           <div className="flex gap-2 pt-4">
-            <Button onClick={() => onSave(editedExpense)} className="terminal-button">
+            <Button onClick={() => onSave(editedExpense)} className="terminal-button h-11 sm:h-auto flex-1">
               save_changes
             </Button>
-            <Button onClick={onClose} className="terminal-button">
+            <Button onClick={onClose} className="terminal-button h-11 sm:h-auto flex-1">
               cancel
             </Button>
           </div>
@@ -810,53 +842,56 @@ function EditGoalDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="terminal-card text-green-400 rounded-none border-green-500/30">
-        <DialogHeader>
-          <DialogTitle className="terminal-header">EDIT_TARGET_PROCESS</DialogTitle>
+      <DialogContent className="terminal-card text-green-400 rounded-none border-green-500/30 w-[95vw] max-w-md mx-auto">
+        <DialogHeader className="p-3 sm:p-6 pb-2">
+          <DialogTitle className="terminal-header text-base sm:text-lg">EDIT_TARGET_PROCESS</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 p-3 sm:p-6 pt-0">
           <div>
-            <Label className="terminal-secondary text-sm">TARGET_NAME</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">TARGET_NAME</Label>
             <Input
               value={editedGoal.label}
               onChange={(e) => setEditedGoal((prev) => ({ ...prev, label: e.target.value }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">TARGET_AMOUNT</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">TARGET_AMOUNT</Label>
             <Input
               type="number"
+              inputMode="numeric"
               value={editedGoal.targetAmount || ""}
               onChange={(e) => setEditedGoal((prev) => ({ ...prev, targetAmount: Number(e.target.value) || 0 }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">CURRENT_AMOUNT</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">CURRENT_AMOUNT</Label>
             <Input
               type="number"
+              inputMode="numeric"
               value={editedGoal.currentAmount || ""}
               onChange={(e) => setEditedGoal((prev) => ({ ...prev, currentAmount: Number(e.target.value) || 0 }))}
-              className="terminal-input"
+              className="terminal-input h-11 sm:h-10 mt-1"
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">DESCRIPTION</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">DESCRIPTION</Label>
             <Textarea
               value={editedGoal.description}
               onChange={(e) => setEditedGoal((prev) => ({ ...prev, description: e.target.value }))}
-              className="terminal-input"
+              className="terminal-input mt-1"
               placeholder="optional_description..."
+              rows={3}
             />
           </div>
           <div>
-            <Label className="terminal-secondary text-sm">COLOR_CODE</Label>
+            <Label className="terminal-secondary text-xs sm:text-sm">COLOR_CODE</Label>
             <div className="grid grid-cols-6 gap-2 mt-2">
               {TERMINAL_COLORS.map((color) => (
                 <button
                   key={color}
-                  className={`w-6 h-6 rounded-none border ${
+                  className={`w-8 h-8 sm:w-6 sm:h-6 rounded-none border ${
                     editedGoal.color === color ? "border-white" : "border-gray-600"
                   }`}
                   style={{
@@ -869,10 +904,10 @@ function EditGoalDialog({
             </div>
           </div>
           <div className="flex gap-2 pt-4">
-            <Button onClick={() => onSave(editedGoal)} className="terminal-button">
+            <Button onClick={() => onSave(editedGoal)} className="terminal-button h-11 sm:h-auto flex-1">
               save_changes
             </Button>
-            <Button onClick={onClose} className="terminal-button">
+            <Button onClick={onClose} className="terminal-button h-11 sm:h-auto flex-1">
               cancel
             </Button>
           </div>
