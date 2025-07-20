@@ -37,23 +37,19 @@ A terminal-style budget management application built with Next.js and TypeScript
 
 ### UI Components
 - **Tailwind CSS 3.4.17** - Utility-first CSS framework
-- **Radix UI** - Headless component primitives:
-  - Accordion, Alert Dialog, Avatar, Button, Card, Checkbox
-  - Dialog, Dropdown Menu, Input, Label, Progress, Select
-  - Tabs, Toast, Tooltip, and other form components
+- **Radix UI** - Headless component primitives (minimal set):
+  - Badge, Button, Card, Dialog, Input, Label, Tabs, Textarea
 - **Lucide React 0.454.0** - Icon library
 - **class-variance-authority** - Component styling variants
 - **tailwind-merge** - Conditional class merging
 - **tailwindcss-animate** - Animation utilities
 
 ### Additional Features
-- **next-themes** - Dark/light mode support
 - **react-hook-form** - Form state management
 - **zod** - Schema validation
-- **sonner** - Toast notifications
-- **cmdk** - Command palette functionality
 - **date-fns** - Date manipulation
-- **recharts** - Chart components (available but not actively used)
+
+Note: Project has been optimized to include only essential dependencies and components actually used by the application.
 
 ## Architecture
 
@@ -63,14 +59,31 @@ app/
 ├── layout.tsx           # Root layout with metadata
 └── page.tsx             # Main application component
 
-components/
-├── ui/                  # Reusable UI components from Radix
-└── theme-provider.tsx   # Theme context provider
+components/ui/           # Essential UI components (8 total)
+├── badge.tsx           # Category badges
+├── button.tsx          # Interactive buttons
+├── card.tsx            # Content containers
+├── dialog.tsx          # Modal dialogs
+├── input.tsx           # Form inputs
+├── label.tsx           # Form labels
+├── tabs.tsx            # Tab navigation
+└── textarea.tsx        # Text areas
+
+hooks/
+├── use-mobile.tsx      # Mobile detection
+└── use-toast.ts        # Toast notifications
+
+lib/
+└── utils.ts            # Utility functions
 
 public/
-├── favicon.svg          # Custom terminal-style favicon
-├── bg_image.jpg         # Default background image
-└── *.png               # Various favicon sizes
+├── favicon.ico         # Generated terminal favicon
+├── favicon.svg         # Vector terminal favicon
+└── bg_image.jpg        # Default background image
+
+scripts/
+├── generate-favicon.js # Dynamic favicon generation
+└── cache-bust-favicon.js # Cache busting utility
 ```
 
 ## Data Structure
