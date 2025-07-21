@@ -113,16 +113,35 @@ const terminalStyles = `
   }
   
   .terminal-card {
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.75);
     border: 1px solid rgba(0, 255, 0, 0.4);
-    backdrop-filter: blur(15px);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
   
   .terminal-card:hover {
     border-color: rgba(0, 255, 0, 0.7);
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.15);
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.85);
+  }
+  
+  /* Firefox - make more transparent to match Safari */
+  @-moz-document url-prefix() {
+    .terminal-card {
+      background: rgba(0, 0, 0, 0.55) !important;
+    }
+    .terminal-card:hover {
+      background: rgba(0, 0, 0, 0.65) !important;
+    }
+  }
+  
+  /* Chrome and Chromium-based browsers (not Safari) */
+  @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .terminal-card {
+      background: rgba(0, 0, 0, 0.55);
+    }
+    .terminal-card:hover {
+      background: rgba(0, 0, 0, 0.65);
+    }
   }
   
   .terminal-text {
